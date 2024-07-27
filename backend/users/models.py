@@ -33,7 +33,7 @@ class CustUser(AbstractUser):
     objects = UserManager()
 
     id = models.UUIDField(
-        "ID",
+        "id",
         primary_key=True,
         default=uuid.uuid4,
         editable=False,

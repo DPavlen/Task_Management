@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "drf_spectacular",
     "drf_spectacular_sidecar",
+    "task_managment.apps.TaskManagmentConfig",
 ]
 
 MIDDLEWARE = [
