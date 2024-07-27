@@ -24,7 +24,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "djoser",
+    "rest_framework",
+    "rest_framework.authtoken",
     "users.apps.UsersConfig",
+    "api.apps.ApiConfig",
+    "drf_spectacular",
+    "drf_spectacular_sidecar",
 ]
 
 MIDDLEWARE = [
@@ -58,6 +64,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "backend.wsgi.application"
 
+# --------------------------------------------
+#     Подключение к БД sqlite3 или postgresql
+# --------------------------------------------
 if DB_ENGINE == "sqlite3":
     DATABASES = {
         "default": {
@@ -101,7 +110,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Статика и медиа backenda
+# --------------------------------------------
+#    Настройка Статики и Медиа backenda
+# --------------------------------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_URL = "/media/"
@@ -110,3 +121,69 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.CustUser"
+
+
+# --------------------------------------------
+#    Настройка REST_FRAMEWORK
+# --------------------------------------------
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend"
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# --------------------------------------------
+#    Настройка DJOSER
+# --------------------------------------------
+DJOSER = {
+    "SERIALIZERS": {
+        "user_create": "users.serializers.CustomUserSerializer",
+        "user": "users.serializers.CustomUserSerializer",
+        "current_user": "users.serializers.CustomUserSerializer",
+    },
+    "PERMISSIONS": {
+        "user": ["djoser.permissions.CurrentUserOrAdminOrReadOnly"],
+        "user_list": ["rest_framework.permissions.IsAuthenticatedOrReadOnly"],
+    },
+}
+HIDE_USERS = True
+
+
+# --------------------------------------------
+#    Настройка SWAGGER_SETTINGS
+# --------------------------------------------
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer Token": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+        }
+    },
+    "USE_SESSION_AUTH": False,
+}
+
+# ------------------------------------------------
+#    Настройка SPECTACULAR_SETTINGS для SWAGGERA
+# ------------------------------------------------
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Task_Management_2024",
+    "VERSION": "1.0.0",
+    "DESCRIPTION": "Task_Management_2024: Backend",
+    "CONTACT": {
+        "name": "Task_Management_2024",
+        "url": "https://github.com/DPavlen/Task_Management",
+        "email": "jobpavlenko@yandex.ru",
+    },
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SCHEMA_COERCE_PATH_PK_SUFFIX": True,
+    "SORT_OPERATIONS": True,
+    "SCHEMA_PATH_PREFIX": r"/api/",
+}
