@@ -9,4 +9,9 @@ class TaskViewSet(viewsets.ModelViewSet):
     """."""
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        """Создание задачи и текущий user_id."""
+        serializer.save(user=self.request.user)
+

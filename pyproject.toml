@@ -33,6 +33,8 @@ black = "^24.4.2"
 celery = "^5.4.0"
 redis = "^5.0.7"
 dynaconf = "^3.2.6"
+elasticsearch-dsl = "^8.0"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

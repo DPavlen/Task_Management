@@ -128,6 +128,8 @@ AUTH_USER_MODEL = "users.CustUser"
 #    Настройка REST_FRAMEWORK
 # --------------------------------------------
 REST_FRAMEWORK = {
+    "DATETIME_FORMAT": "%d.%m.%Y %H:%M:%S",
+
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ],
@@ -188,3 +190,17 @@ SPECTACULAR_SETTINGS = {
     "SORT_OPERATIONS": True,
     "SCHEMA_PATH_PREFIX": r"/api/",
 }
+
+
+# CELERY_BROKER_URL = "redis://redis:6379/0"
+
+# ------------------------------------------------
+#    Настройка CELERY и RabbitMQ
+# ------------------------------------------------
+CELERY_BROKER_URL = "amqp://rabbitmq"
+# CELERY_BROKER_URL = "amqp://guest:guest@localhost:5672//"
+CELERY_RESULT_BACKEND = "rpc://"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "UTC"
