@@ -83,7 +83,7 @@ if DB_ENGINE == "postgresql":
             "NAME": os.getenv("POSTGRES_DB", default="django"),
             "USER": os.getenv("POSTGRES_USER", default="django_user"),
             "PASSWORD": os.getenv("POSTGRES_PASSWORD", default="django"),
-            "HOST": os.getenv("DB_HOST", default="doct24_db"),
+            "HOST": os.getenv("DB_HOST", default="db"),
             "PORT": os.getenv("DB_PORT", default=5432),
         }
     }
@@ -197,8 +197,8 @@ SPECTACULAR_SETTINGS = {
 # ------------------------------------------------
 #    Настройка CELERY и RabbitMQ
 # ------------------------------------------------
-CELERY_BROKER_URL = 'amqp://rmuser:rmpassword@rabbitmq:5672/'
-# CELERY_BROKER_URL = "amqp://rabbitmq"
+CELERY_BROKER_URL = "amqp://rmuser:rmpassword@rabbitmq:5672/"
+# CELERY_BROKER_URL = "amqp://guest:**@rabbitmq:5672//"
 # CELERY_BROKER_URL = "amqp://guest:guest@localhost:5672//"
 CELERY_RESULT_BACKEND = "rpc://"
 CELERY_ACCEPT_CONTENT = ["json"]

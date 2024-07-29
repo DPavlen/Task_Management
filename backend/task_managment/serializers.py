@@ -6,6 +6,7 @@ from .models import Task
 class TaskSerializer(serializers.ModelSerializer):
     """."""
     user = serializers.SerializerMethodField()
+    status = serializers.CharField(read_only=True)
     status_text = serializers.CharField(source="get_status_display", read_only=True)
 
     class Meta:
