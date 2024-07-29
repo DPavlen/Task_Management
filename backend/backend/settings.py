@@ -114,9 +114,9 @@ USE_TZ = True
 # --------------------------------------------
 #    Настройка Статики и Медиа backenda
 # --------------------------------------------
-STATIC_URL = "/static/"
+STATIC_URL = "/backend_static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
-MEDIA_URL = "/media/"
+MEDIA_URL = "/backend_media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -197,7 +197,8 @@ SPECTACULAR_SETTINGS = {
 # ------------------------------------------------
 #    Настройка CELERY и RabbitMQ
 # ------------------------------------------------
-CELERY_BROKER_URL = "amqp://rabbitmq"
+CELERY_BROKER_URL = 'amqp://rmuser:rmpassword@rabbitmq:5672/'
+# CELERY_BROKER_URL = "amqp://rabbitmq"
 # CELERY_BROKER_URL = "amqp://guest:guest@localhost:5672//"
 CELERY_RESULT_BACKEND = "rpc://"
 CELERY_ACCEPT_CONTENT = ["json"]
