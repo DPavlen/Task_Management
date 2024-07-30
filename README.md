@@ -166,3 +166,8 @@ sudo docker compose -f docker-compose.yml down
 
 **Павленко Дмитрий**  
 - Ссылка на мой профиль в GitHub [Dmitry Pavlenko](https://github.com/DPavlen)  
+
+![2024-07-30 19 10 21](https://github.com/user-attachments/assets/7b85db16-7457-42b9-9e5c-6a0dc80a0261)
+![2024-07-30 19 10 09](https://github.com/user-attachments/assets/e68297f3-2742-41a1-ae17-13e6a649bbf9)
+![2024-07-30 19 10 15](https://github.com/user-attachments/assets/98b13fb9-b198-40fc-841d-5d9a278d08d6)
+
