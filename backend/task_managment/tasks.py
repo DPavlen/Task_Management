@@ -11,7 +11,7 @@ def process_task(self, task_id):
     if task.status == "in_queue":
         task.status = "completed"
         task.kwargs = {
-            "Сообщение": f"Статус задачи {task.name} у пользователя {task.user} изменен!"
+            "Сообщение": f"Статус задачи {self.task.name} у пользователя {self.task.user} изменен!"
         }
         task.result = "Текущий статус задачи Завершена"
         task.save()

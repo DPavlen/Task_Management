@@ -2,8 +2,10 @@ from drf_spectacular.utils import extend_schema_view
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 
 from .models import Task
+from .search_indexes import TaskIndex
 from .permissions import IsOwnerOrReadOnlyOrAdmin
 from .schemas import COLLECT_SCHEMA
 from .serializers import TaskSerializer
@@ -84,3 +86,23 @@ class TaskViewSet(viewsets.ModelViewSet):
 
         except Exception as e:
             return Response(str(e), status=status.HTTP_404_NOT_FOUND)
+
+
+# class TaskDocumentViewSet(DocumentViewSet):
+#     document = TaskIndex
+#     serializer_class = TaskDocumentSerializer
+#     lookup_field = 'id'
+#     filter_backends = [
+#         'django_elasticsearch_dsl_drf.filter_backends.search.SearchFilterBackend',
+#         'django_elasticsearch_dsl_drf.filter_backends.filtering.FilteringFilterBackend',
+#         'django_elasticsearch_dsl_drf.filter_backends.ordering.OrderingFilterBackend',
+#     ]
+#     search_fields = ('name', 'description',)
+#     filter_fields = {
+#         'name': 'name',
+#         'description': 'description',
+#     }
+#     ordering_fields = {
+#         'created_at': 'created_at',
+#     }
+#     ordering = ('created_at',)

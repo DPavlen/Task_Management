@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "drf_spectacular_sidecar",
     "task_managment.apps.TaskManagmentConfig",
+    "django_elasticsearch_dsl",
+    "django_elasticsearch_dsl_drf",
 ]
 
 MIDDLEWARE = [
@@ -205,3 +207,22 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "UTC"
+
+# ------------------------------------------------
+#    Настройка и  подключение к Elasticsearch
+# ------------------------------------------------
+ELASTICSEARCH_DSL = {
+    "default": {
+        "hosts": [{
+            "host": "localhost",
+            "port": 9200,
+            "scheme": "http",
+        }],
+    },
+}
+
+# ELASTICSEARCH_DSL = {
+#     "default": {
+#         "hosts": "elasticsearch:9200"
+#     },
+#}
