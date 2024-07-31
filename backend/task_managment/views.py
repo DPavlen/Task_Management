@@ -1,8 +1,9 @@
 from drf_spectacular.utils import extend_schema_view
 from rest_framework import viewsets, status
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
+# from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 
 from .models import Task
 # from .search_indexes import TaskIndex
@@ -38,10 +39,14 @@ class TaskViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """
         QuerySet, отфильтрованный по текущему пользователю.
+        Если не авторизован, то выдаем сообщение.
         """
 
         user = self.request.user
-        return super().get_queryset().filter(user=user)
+        if user.is_authenticated:
+            return super().get_queryset().filter(user=user)
+        else:
+            raise PermissionDenied("Необходимо авторизоваться!")
 
     def list(self, request, *args, **kwargs):
         """

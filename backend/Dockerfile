@@ -15,12 +15,12 @@ WORKDIR /app
 
 RUN pip install poetry
 
-COPY pyproject.toml poetry.lock /app/
+COPY pyproject.toml /app/
 
-RUN poetry install --no-dev
-
-CMD ["bash", "/app/run_django.sh"]
+RUN poetry lock && poetry install --only main
 
 COPY . /app/
+
+CMD ["bash", "/app/run_django.sh"]
 
 RUN poetry install --no-root

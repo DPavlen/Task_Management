@@ -82,7 +82,7 @@ services:
       - FLOWER_API_URL=http://rabbitmq:15672/api/
     depends_on:
       - rabbitmq
-#      - backend
+      - backend
     networks:
       - task-network
 
