@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 
 from .models import Task
-from .search_indexes import TaskIndex
+# from .search_indexes import TaskIndex
 from .permissions import IsOwnerOrReadOnlyOrAdmin
 from .schemas import COLLECT_SCHEMA
 from .serializers import TaskSerializer

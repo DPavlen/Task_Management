@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.11.9-slim
 
 ENV SRC_DIR=/app \
     APP_USER=backend-user \
@@ -17,15 +17,10 @@ RUN pip install poetry
 
 COPY pyproject.toml poetry.lock /app/
 
-RUN poetry config virtualenvs.create false && poetry install --no-dev
+RUN poetry install --no-dev
 
 CMD ["bash", "/app/run_django.sh"]
 
 COPY . /app/
-
-#RUN poetry run python manage.py collectstatic --noinput
-
-#CMD ["gunicorn", "--bind", "0.0.0.0:8000", "backend.wsgi:application"]
-
 
 RUN poetry install --no-root
