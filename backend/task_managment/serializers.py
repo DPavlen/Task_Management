@@ -1,10 +1,8 @@
+from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
 from rest_framework import serializers
-# from django_elasticsearch_dsl_drf.serializers import DocumentSerializer
-# # from elasticsearch_dsl import EmptySearch
-# from .search_indexes import TaskIndex
-
 
 from .models import Task
+from .documents import TaskDocument
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -26,19 +24,19 @@ class TaskSerializer(serializers.ModelSerializer):
         )
 
     @staticmethod
-    def get_user(instance):
+    def get_user(instance) -> str:
         """Получаем username пользователя."""
         return instance.user.username
 
 
-# class TaskDocumentSerializer(DocumentSerializer):
-#     class Meta:
-#         document = TaskIndex
-#         fields = (
-#             "id",
-#             "user",
-#             "name",
-#             "description",
-#             "status",
-#             "created_at",
-#         )
+class TaskDocumentSerializer(DocumentSerializer):
+    class Meta:
+        document = TaskDocument
+        fields = (
+            "id",
+            "user",
+            "name",
+            "description",
+            "status",
+            "created_at",
+        )

@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+from django.conf.global_settings import LOGGING
 from django.core.management.utils import get_random_secret_key
 from dotenv import load_dotenv
 
@@ -211,18 +212,26 @@ CELERY_TIMEZONE = "UTC"
 # ------------------------------------------------
 #    Настройка и  подключение к Elasticsearch
 # ------------------------------------------------
+# ELASTICSEARCH_DSL={
+#     "default": {
+#         "hosts": "localhost:9200",
+#         "http_auth": ("username", "password")
+#     }
+# }
 ELASTICSEARCH_DSL = {
     "default": {
-        "hosts": [{
-            "host": "localhost",
-            "port": 9200,
-            "scheme": "http",
-        }],
+        "hosts": "elasticsearch:9200",
+        "timeout": 30,
     },
 }
 
-# ELASTICSEARCH_DSL = {
-#     "default": {
-#         "hosts": "elasticsearch:9200"
-#     },
-#}
+if LOGGING:
+    LOGGING['loggers'].update(
+        {
+            "django.db": {
+                "handlers": ["console"],
+                "level": "DEBUG",
+                "propagate": False,
+            }
+        }
+    )

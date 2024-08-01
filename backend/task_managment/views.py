@@ -3,13 +3,29 @@ from rest_framework import viewsets, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-# from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
+from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
+
+from django_elasticsearch_dsl_drf.constants import (
+    SUGGESTER_TERM,
+    SUGGESTER_PHRASE,
+    SUGGESTER_COMPLETION,
+    FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX,
+)
+from django_elasticsearch_dsl_drf.filter_backends import (
+    FilteringFilterBackend,
+    DefaultOrderingFilterBackend,
+    OrderingFilterBackend,
+    SearchFilterBackend,
+    SuggesterFilterBackend,
+    FunctionalSuggesterFilterBackend,
+    CompoundSearchFilterBackend
+)
 
 from .models import Task
-# from .search_indexes import TaskIndex
+from .documents import TaskDocument
 from .permissions import IsOwnerOrReadOnlyOrAdmin
 from .schemas import COLLECT_SCHEMA
-from .serializers import TaskSerializer
+from .serializers import TaskSerializer, TaskDocumentSerializer
 from task_managment.tasks import process_task
 
 
@@ -93,21 +109,69 @@ class TaskViewSet(viewsets.ModelViewSet):
             return Response(str(e), status=status.HTTP_404_NOT_FOUND)
 
 
-# class TaskDocumentViewSet(DocumentViewSet):
-#     document = TaskIndex
-#     serializer_class = TaskDocumentSerializer
-#     lookup_field = 'id'
-#     filter_backends = [
-#         'django_elasticsearch_dsl_drf.filter_backends.search.SearchFilterBackend',
-#         'django_elasticsearch_dsl_drf.filter_backends.filtering.FilteringFilterBackend',
-#         'django_elasticsearch_dsl_drf.filter_backends.ordering.OrderingFilterBackend',
-#     ]
-#     search_fields = ('name', 'description',)
-#     filter_fields = {
-#         'name': 'name',
-#         'description': 'description',
-#     }
-#     ordering_fields = {
-#         'created_at': 'created_at',
-#     }
-#     ordering = ('created_at',)
+class TaskDocumentViewSet(DocumentViewSet):
+    document = TaskDocument
+    serializer_class = TaskDocumentSerializer
+    lookup_field = "id"
+    filter_backends = [
+        FilteringFilterBackend,
+        SearchFilterBackend,
+        OrderingFilterBackend,
+        # CompoundSearchFilterBackend
+    ]
+    # Define search fields
+    search_fields = ("name", "description",)
+    filter_fields = {
+        "name": "name",
+        "description": "description",
+    }
+    ordering_fields = {
+        "created_at": "created_at",
+    }
+    ordering = ("created_at",)
+
+    # Suggester fields
+    suggester_fields = {
+        'name_suggest': {
+            'field': 'name.suggest',
+            'suggesters': [
+                SUGGESTER_TERM,
+                SUGGESTER_PHRASE,
+                SUGGESTER_COMPLETION,
+            ],
+            'default_suggester': SUGGESTER_COMPLETION,
+        },
+        'salutation.suggest': {
+            'suggesters': [
+                SUGGESTER_COMPLETION,
+            ],
+            'default_suggester': SUGGESTER_COMPLETION,
+        },
+    }
+
+    # Functional suggester fields
+    functional_suggester_fields = {
+        'name_suggest': {
+            'field': 'name.raw',
+            'suggesters': [
+                FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX,
+            ],
+            'default_suggester': FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX,
+            # 'serializer_field': 'name',
+        },
+        'salutation_suggest': {
+            'field': 'salutation.raw',
+            'suggesters': [
+                FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX,
+            ],
+            'default_suggester': FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX,
+            # 'serializer_field': 'salutation',
+        },
+        'salutation.raw': {
+            'suggesters': [
+                FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX,
+            ],
+            'default_suggester': FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX,
+            # 'serializer_field': 'salutation',
+        },
+    }
