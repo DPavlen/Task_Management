@@ -79,6 +79,7 @@ services:
       - task-network
 
   flower:
+#    image: mher/flower:latest
     image: mher/flower:0.9.7
     command: --broker=amqp://rmuser:rmpassword@rabbitmq --broker_api=http://rmuser:rmpassword@rabbitmq:15672/api/
     restart: always

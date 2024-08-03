@@ -2,29 +2,20 @@ from drf_spectacular.utils import extend_schema_view
 from rest_framework import viewsets, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 
-from django_elasticsearch_dsl_drf.constants import (
-    SUGGESTER_TERM,
-    SUGGESTER_PHRASE,
-    SUGGESTER_COMPLETION,
-    FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX,
-)
 from django_elasticsearch_dsl_drf.filter_backends import (
     FilteringFilterBackend,
-    DefaultOrderingFilterBackend,
     OrderingFilterBackend,
-    SearchFilterBackend,
-    SuggesterFilterBackend,
-    FunctionalSuggesterFilterBackend,
     CompoundSearchFilterBackend
 )
 
 from .models import Task
 from .documents import TaskDocument
 from .permissions import IsOwnerOrReadOnlyOrAdmin
-from .schemas import COLLECT_SCHEMA
+from .schemas import COLLECT_SCHEMA, TASK_DOCUMENT_VIEWSET_SCHEMA
 from .serializers import TaskSerializer, TaskDocumentSerializer
 from task_managment.tasks import process_task
 
@@ -34,8 +25,9 @@ class TaskViewSet(viewsets.ModelViewSet):
     """
     Кастомный ViewSet задач.
     """
-    queryset = Task.objects.all()
+    queryset = Task.objects.select_related("user").all()
     serializer_class = TaskSerializer
+    pagination_class = LimitOffsetPagination
 
     def get_permissions(self):
         """
@@ -109,15 +101,17 @@ class TaskViewSet(viewsets.ModelViewSet):
             return Response(str(e), status=status.HTTP_404_NOT_FOUND)
 
 
+@extend_schema_view(**TASK_DOCUMENT_VIEWSET_SCHEMA)
 class TaskDocumentViewSet(DocumentViewSet):
+    """Кастомный viewset для TaskDocument (Elasticsearch)."""
     document = TaskDocument
     serializer_class = TaskDocumentSerializer
-    lookup_field = "id"
+    # lookup_field = "id"
     filter_backends = [
         FilteringFilterBackend,
-        SearchFilterBackend,
+        #SearchFilterBackend,
+        CompoundSearchFilterBackend,
         OrderingFilterBackend,
-        # CompoundSearchFilterBackend
     ]
     # Define search fields
     search_fields = ("name", "description",)
@@ -129,49 +123,3 @@ class TaskDocumentViewSet(DocumentViewSet):
         "created_at": "created_at",
     }
     ordering = ("created_at",)
-
-    # Suggester fields
-    suggester_fields = {
-        'name_suggest': {
-            'field': 'name.suggest',
-            'suggesters': [
-                SUGGESTER_TERM,
-                SUGGESTER_PHRASE,
-                SUGGESTER_COMPLETION,
-            ],
-            'default_suggester': SUGGESTER_COMPLETION,
-        },
-        'salutation.suggest': {
-            'suggesters': [
-                SUGGESTER_COMPLETION,
-            ],
-            'default_suggester': SUGGESTER_COMPLETION,
-        },
-    }
-
-    # Functional suggester fields
-    functional_suggester_fields = {
-        'name_suggest': {
-            'field': 'name.raw',
-            'suggesters': [
-                FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX,
-            ],
-            'default_suggester': FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX,
-            # 'serializer_field': 'name',
-        },
-        'salutation_suggest': {
-            'field': 'salutation.raw',
-            'suggesters': [
-                FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX,
-            ],
-            'default_suggester': FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX,
-            # 'serializer_field': 'salutation',
-        },
-        'salutation.raw': {
-            'suggesters': [
-                FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX,
-            ],
-            'default_suggester': FUNCTIONAL_SUGGESTER_COMPLETION_PREFIX,
-            # 'serializer_field': 'salutation',
-        },
-    }

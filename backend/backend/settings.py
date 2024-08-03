@@ -195,8 +195,6 @@ SPECTACULAR_SETTINGS = {
 }
 
 
-# CELERY_BROKER_URL = "redis://redis:6379/0"
-
 # ------------------------------------------------
 #    Настройка CELERY и RabbitMQ
 # ------------------------------------------------
@@ -212,12 +210,6 @@ CELERY_TIMEZONE = "UTC"
 # ------------------------------------------------
 #    Настройка и  подключение к Elasticsearch
 # ------------------------------------------------
-# ELASTICSEARCH_DSL={
-#     "default": {
-#         "hosts": "localhost:9200",
-#         "http_auth": ("username", "password")
-#     }
-# }
 ELASTICSEARCH_DSL = {
     "default": {
         "hosts": "elasticsearch:9200",

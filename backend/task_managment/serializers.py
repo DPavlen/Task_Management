@@ -6,7 +6,10 @@ from .documents import TaskDocument
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    """."""
+    """
+    Сериализатор для модели Task.
+    """
+
     user = serializers.SerializerMethodField()
     status = serializers.CharField(read_only=True)
     status_text = serializers.CharField(source="get_status_display", read_only=True)
@@ -30,6 +33,9 @@ class TaskSerializer(serializers.ModelSerializer):
 
 
 class TaskDocumentSerializer(DocumentSerializer):
+    """
+    Сериализатор для модели TaskDocument.
+    """
     class Meta:
         document = TaskDocument
         fields = (

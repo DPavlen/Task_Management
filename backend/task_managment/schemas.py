@@ -1,5 +1,4 @@
-from drf_spectacular.utils import extend_schema
-from drf_spectacular.utils import OpenApiResponse
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 
 
 COLLECT_SCHEMA = {
@@ -32,7 +31,27 @@ COLLECT_SCHEMA = {
     ),
     "retrieve": extend_schema(
         summary="Получить информацию о задаче по ID. (Доступно только автору или админу).",
-        description="Получить информацию о сборе по его ID. Возвращает "
+        description="Получить информацию о задаче по его ID. Возвращает "
+        "информацию о конкретном запрошенной задаче!"
+    ),
+}
+
+TASK_DOCUMENT_VIEWSET_SCHEMA = {
+    "list": extend_schema(
+        summary="Поиск задач по названию(name) и описанию(description) через Elasticsearch",
+        description="Позволяет осуществлять поиск задач по частям слова в полях 'name' и 'description'.",
+        parameters=[
+            OpenApiParameter(
+                name="search",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                description="Поиск по частям слова в полях 'name' и 'description'.",
+            ),
+        ],
+    ),
+    "retrieve": extend_schema(
+        summary="Получить информацию о задаче по ID.",
+        description="Получить информацию о задаче по его ID. Возвращает "
         "информацию о конкретном запрошенной задаче!"
     ),
 }
