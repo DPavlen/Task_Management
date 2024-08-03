@@ -71,7 +71,9 @@
 - Подключена БД PostgreSQL, но можно также использовать sqlite3 в зависимости от параметра DB_ENGINE в файле .env
 - Написан файл docker-compose.yml 
 
-![img_1.png](img_1.png)
+Backend API
+ ![Backend API](https://github.com/user-attachments/assets/23e88b9e-446b-47f6-b41b-3fc4d2b5c352)
+
 
 ## 3. Стек технологий <a id=3></a>
 [![Django](https://img.shields.io/badge/Django-^4.1.10-6495ED)](https://www.djangoproject.com) 
